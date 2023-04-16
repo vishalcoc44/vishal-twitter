@@ -1,0 +1,70 @@
+<html>
+<head>
+  <title>Twitter Search Website</title>
+  <style>
+    /* Add your CSS code here */
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-api-v2/1.4.0/twitter-api.min.js"></script>
+  <script>
+    // Add your JavaScript code here
+    // Initialize the Twitter API client with your credentials
+    const client = new TwitterApi({
+      appKey: 'YtpIq1qE9NFYq0sYkZdJi2CPl',
+      appSecret: 'wf6ImvcxdYsIEII5d5bDpznAfS1QvpgiUQHIxAXJg9ErCXF8vG',
+      accessToken: '786063575521591296-X7FRXjacYN6T3asAV7CtySea8rJR2u6',
+      accessSecret: 'eG6lsw6kx4PRPCpLsv66CY8dOqJotAGdXMxdHR9zuGxKY'
+    });
+
+    // Define a function to search for tweets by keywords
+    function searchTweets() {
+      // Get the input value from the search box
+      let query = $('#search-box').val();
+      // Check if the input is not empty
+      if (query) {
+        // Clear the previous results
+        $('#results').empty();
+        // Call the Twitter API to search for tweets
+        client.v2.search(query, {tweet: {fields: ['created_at', 'text']}})
+          .then(response => {
+            // Get the data array from the response
+            let data = response.data;
+            // Check if there are any tweets
+            if (data.length > 0) {
+              // Loop through the tweets
+              for (let tweet of data) {
+                // Create a div element for each tweet
+                let tweetDiv = $('<div></div>');
+                // Add the tweet text and date to the div
+                tweetDiv.append(`<p>${tweet.text}</p>`);
+                tweetDiv.append(`<p>${tweet.created_at}</p>`);
+                // Append the div to the results section
+                $('#results').append(tweetDiv);
+              }
+            } else {
+              // If no tweets are found, show a message
+              $('#results').append('<p>No tweets found.</p>');
+            }
+          })
+          .catch(error => {
+            // If there is an error, show a message
+            $('#results').append(`<p>Error: ${error.message}</p>`);
+          });
+      } else {
+        // If the input is empty, show a message
+        $('#results').append('<p>Please enter a keyword.</p>');
+      }
+    }
+  </script>
+</head>
+<body>
+  <h1>Twitter Search Website</h1>
+  <div id="search">
+    <input type="text" id="search-box" placeholder="Enter a keyword">
+    <button id="search-button" onclick="searchTweets()">Search</button>
+  </div>
+  <div id="results">
+    <!-- The results will be displayed here -->
+  </div>
+</body>
+</html>
